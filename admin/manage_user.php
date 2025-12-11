@@ -81,24 +81,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['reset_password'])) {
     exit();
 }
 
-// Handle Delete User
+// Handle Soft Delete User
 if (isset($_GET['delete']) && isset($_GET['id'])) {
     $user_id = (int)$_GET['id'];
-    
-    // Don't allow deleting own account
+
+    // Tidak boleh hapus akun sendiri
     if ($user_id == $_SESSION['user_id']) {
         $_SESSION['error_message'] = "Tidak dapat menghapus akun sendiri!";
     } else {
         try {
-            $sql = "DELETE FROM users WHERE id = ?";
+            // Soft delete → ubah status menjadi inactive + isi deleted_at
+            $sql = "UPDATE users 
+                    SET status = 'inactive', deleted_at = NOW() 
+                    WHERE id = ?";
             $stmt = $pdo->prepare($sql);
             $stmt->execute([$user_id]);
-            
-            $_SESSION['success_message'] = "User berhasil dihapus!";
+
+            $_SESSION['success_message'] = "User berhasil dinonaktifkan (soft delete)!";
         } catch (PDOException $e) {
-            $_SESSION['error_message'] = "Gagal menghapus user: " . $e->getMessage();
+            $_SESSION['error_message'] = "Gagal melakukan soft delete: " . $e->getMessage();
         }
     }
+
     header('Location: manage_user.php');
     exit();
 }
@@ -108,7 +112,41 @@ $role_filter = isset($_GET['role']) ? $_GET['role'] : 'all';
 $status_filter = isset($_GET['status']) ? $_GET['status'] : 'all';
 $search = isset($_GET['search']) ? $_GET['search'] : '';
 
-// Build query
+// Pagination setup
+$records_per_page = 20;
+$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+$page = max(1, $page); // Ensure page is at least 1
+$offset = ($page - 1) * $records_per_page;
+
+// Build query for counting total records
+$count_sql = "SELECT COUNT(*) as total FROM users WHERE 1=1";
+$params = [];
+
+if ($role_filter !== 'all') {
+    $count_sql .= " AND role = ?";
+    $params[] = $role_filter;
+}
+
+if ($status_filter !== 'all') {
+    $count_sql .= " AND status = ?";
+    $params[] = $status_filter;
+}
+
+if (!empty($search)) {
+    $count_sql .= " AND (nim_nip LIKE ? OR nama LIKE ? OR email LIKE ?)";
+    $search_param = "%$search%";
+    $params[] = $search_param;
+    $params[] = $search_param;
+    $params[] = $search_param;
+}
+
+// Get total records
+$stmt = $pdo->prepare($count_sql);
+$stmt->execute($params);
+$total_records = $stmt->fetch()['total'];
+$total_pages = ceil($total_records / $records_per_page);
+
+// Build query for fetching users with pagination
 $sql = "SELECT * FROM users WHERE 1=1";
 $params = [];
 
@@ -130,7 +168,8 @@ if (!empty($search)) {
     $params[] = $search_param;
 }
 
-$sql .= " ORDER BY created_at DESC";
+$sql .= " ORDER BY created_at DESC LIMIT $records_per_page OFFSET $offset";
+
 $stmt = $pdo->prepare($sql);
 $stmt->execute($params);
 $users = $stmt->fetchAll();
@@ -145,6 +184,13 @@ $stats_sql = "SELECT
               FROM users";
 $stmt = $pdo->query($stats_sql);
 $stats = $stmt->fetch();
+
+// Function to build pagination URL
+function build_pagination_url($page_num) {
+    $params = $_GET;
+    $params['page'] = $page_num;
+    return '?' . http_build_query($params);
+}
 
 $page_title = "Manajemen Pengguna";
 include_once '../includes/header.php';
@@ -349,6 +395,63 @@ include_once '../includes/navbar_admin.php';
                     </tbody>
                 </table>
             </div>
+            
+            <!-- Pagination -->
+            <?php if ($total_pages > 1): ?>
+                <div class="d-flex justify-content-between align-items-center mt-4">
+                    <div class="text-muted">
+                        Halaman <?= $page ?> dari <?= $total_pages ?> (Total: <?= $total_records ?> records)
+                    </div>
+                    <nav aria-label="Page navigation">
+                        <ul class="pagination pagination-sm mb-0">
+                            <!-- Previous Button -->
+                            <li class="page-item <?= $page <= 1 ? 'disabled' : '' ?>">
+                                <a class="page-link" href="<?= $page > 1 ? build_pagination_url($page - 1) : '#' ?>" aria-label="Previous">
+                                    <i class="fas fa-chevron-left"></i>
+                                </a>
+                            </li>
+                            
+                            <?php
+                            // Calculate page range to show
+                            $range = 2; // Number of pages to show on each side of current page
+                            $start = max(1, $page - $range);
+                            $end = min($total_pages, $page + $range);
+                            
+                            // Show first page and ellipsis if needed
+                            if ($start > 1) {
+                                echo '<li class="page-item"><a class="page-link" href="' . build_pagination_url(1) . '">1</a></li>';
+                                if ($start > 2) {
+                                    echo '<li class="page-item disabled"><span class="page-link">...</span></li>';
+                                }
+                            }
+                            
+                            // Show page numbers
+                            for ($i = $start; $i <= $end; $i++) {
+                                $active = $i == $page ? 'active' : '';
+                                echo '<li class="page-item ' . $active . '">';
+                                echo '<a class="page-link" href="' . build_pagination_url($i) . '">' . $i . '</a>';
+                                echo '</li>';
+                            }
+                            
+                            // Show ellipsis and last page if needed
+                            if ($end < $total_pages) {
+                                if ($end < $total_pages - 1) {
+                                    echo '<li class="page-item disabled"><span class="page-link">...</span></li>';
+                                }
+                                echo '<li class="page-item"><a class="page-link" href="' . build_pagination_url($total_pages) . '">' . $total_pages . '</a></li>';
+                            }
+                            ?>
+                            
+                            <!-- Next Button -->
+                            <li class="page-item <?= $page >= $total_pages ? 'disabled' : '' ?>">
+                                <a class="page-link" href="<?= $page < $total_pages ? build_pagination_url($page + 1) : '#' ?>" aria-label="Next">
+                                    <i class="fas fa-chevron-right"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            <?php endif; ?>
         </div>
     </div>
 </div>
