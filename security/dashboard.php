@@ -122,6 +122,11 @@ require_once '../includes/header.php';
 require_once '../includes/navbar_security.php';
 ?>
 
+<<<<<<< HEAD
+=======
+<div class="container-fluid py-4">
+
+>>>>>>> f466f6fc8eb3f3cc2ab1997d876b55e420963798
 <!-- Officer Info Card -->
 <div class="card bg-gradient-primary text-white mb-4">
     <div class="card-body">
@@ -135,7 +140,11 @@ require_once '../includes/navbar_security.php';
                     <i class="fas fa-clock me-2"></i>Shift: <strong><?php echo ucfirst($officer['shift']); ?></strong>
                 </p>
                 <p class="mb-0">
+<<<<<<< HEAD
                     <i class="fas fa-map-marker-alt me-2"></i>Area: <strong><?php echo htmlspecialchars($officer['area_responsibility']); ?></strong>
+=======
+                    <i class="fas fa-map-marker-alt me-2"></i>Area: <strong><?php echo html_entity_decode($officer['area_responsibility']); ?></strong>
+>>>>>>> f466f6fc8eb3f3cc2ab1997d876b55e420963798
                 </p>
             </div>
             <div class="col-md-4 text-center">
@@ -647,4 +656,9 @@ function showAnnouncementDetail(announcement) {
 }
 </script>
 
+<<<<<<< HEAD
+=======
+</div>
+
+>>>>>>> f466f6fc8eb3f3cc2ab1997d876b55e420963798
 <?php require_once '../includes/footer.php'; ?>

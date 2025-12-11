@@ -99,7 +99,11 @@ require_once '../includes/navbar_admin.php';
 ?>
 
 <!-- Page Header with Logout Button -->
+<<<<<<< HEAD
 <div class="d-flex justify-content-between align-items-center mb-4">
+=======
+<div class="d-flex justify-content-between align-items-center mb-4" style="margin-top: 30px;">
+>>>>>>> f466f6fc8eb3f3cc2ab1997d876b55e420963798
     <div>
         <h2 class="mb-1"><i class="fas fa-tachometer-alt me-2"></i>Dashboard Admin</h2>
         <p class="text-muted mb-0">Selamat datang, <?php echo htmlspecialchars($current_user['nama'] ?? 'Admin'); ?>!</p>

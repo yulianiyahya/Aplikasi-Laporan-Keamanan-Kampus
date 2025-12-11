@@ -253,7 +253,11 @@ include_once '../includes/navbar_admin.php';
                                         ?>
                                         <span class="badge bg-<?= $shift_badge ?>"><?= $shift_text ?></span>
                                     </td>
+<<<<<<< HEAD
                                     <td><?= htmlspecialchars($officer['area_responsibility']) ?></td>
+=======
+                                    <td><?= htmlspecialchars(html_entity_decode($officer['area_responsibility'])) ?></td>
+>>>>>>> f466f6fc8eb3f3cc2ab1997d876b55e420963798
                                     <td>
                                         <span class="badge bg-primary"><?= $officer['total_handled'] ?> Laporan</span>
                                     </td>

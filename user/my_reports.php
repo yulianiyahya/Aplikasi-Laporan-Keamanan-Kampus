@@ -73,6 +73,11 @@ require_once '../includes/header.php';
 require_once '../includes/navbar_user.php';
 ?>
 
+<<<<<<< HEAD
+=======
+<div class="container-fluid py-4">
+
+>>>>>>> f466f6fc8eb3f3cc2ab1997d876b55e420963798
 <?php if (isset($_SESSION['success_message'])): ?>
     <div class="alert alert-success alert-dismissible fade show">
         <i class="fas fa-check-circle me-2"></i>
@@ -321,4 +326,9 @@ require_once '../includes/navbar_user.php';
     </div>
 </div>
 
+<<<<<<< HEAD
+=======
+</div>
+
+>>>>>>> f466f6fc8eb3f3cc2ab1997d876b55e420963798
 <?php require_once '../includes/footer.php'; ?>

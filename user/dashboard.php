@@ -103,6 +103,11 @@ require_once '../includes/header.php';
 require_once '../includes/navbar_user.php';
 ?>
 
+<<<<<<< HEAD
+=======
+<div class="container-fluid py-4">
+
+>>>>>>> f466f6fc8eb3f3cc2ab1997d876b55e420963798
 <!-- Welcome Banner -->
 <div class="card bg-gradient-primary text-white mb-4">
     <div class="card-body">
@@ -653,4 +658,9 @@ function showAnnouncementDetail(announcement) {
 }
 </script>
 
+<<<<<<< HEAD
+=======
+</div>
+
+>>>>>>> f466f6fc8eb3f3cc2ab1997d876b55e420963798
 <?php require_once '../includes/footer.php'; ?>

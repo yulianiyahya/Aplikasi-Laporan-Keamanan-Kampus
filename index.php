@@ -352,6 +352,13 @@ $announcements = $pdo->query($announcements_sql)->fetchAll();
             z-index: 1;
         }
 
+<<<<<<< HEAD
+=======
+        .features-section .row{
+            row-gap: 30px;
+        }
+
+>>>>>>> f466f6fc8eb3f3cc2ab1997d876b55e420963798
         .section-title {
             font-family: 'Clash Grotesk', serif;
             font-size: clamp(2rem, 5vw, 2.5rem);
@@ -374,13 +381,24 @@ $announcements = $pdo->query($announcements_sql)->fetchAll();
             border-radius: 20px;
             background: var(--glass-blue);
             border: 1px solid rgba(108, 155, 207, 0.1);
+<<<<<<< HEAD
             margin: 15px 0;
+=======
+            margin: 30px 0;
+>>>>>>> f466f6fc8eb3f3cc2ab1997d876b55e420963798
             transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
             height: 100%;
             position: relative;
             overflow: hidden;
         }
 
+<<<<<<< HEAD
+=======
+        .feature-section .col-md-4{
+            margin-bottom: 30px;
+        }
+
+>>>>>>> f466f6fc8eb3f3cc2ab1997d876b55e420963798
         .feature-card::before {
             content: '';
             position: absolute;

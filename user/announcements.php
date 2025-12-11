@@ -88,6 +88,11 @@ require_once '../includes/header.php';
 require_once '../includes/navbar_user.php';
 ?>
 
+<<<<<<< HEAD
+=======
+<div class="container-fluid py-4">
+
+>>>>>>> f466f6fc8eb3f3cc2ab1997d876b55e420963798
 <!-- Header -->
 <div class="row mb-4 align-items-center">
     <div class="col-md-8">
@@ -471,4 +476,9 @@ function showAnnouncementDetail(announcement) {
 }
 </script>
 
+<<<<<<< HEAD
+=======
+</div>
+
+>>>>>>> f466f6fc8eb3f3cc2ab1997d876b55e420963798
 <?php require_once '../includes/footer.php'; ?>
